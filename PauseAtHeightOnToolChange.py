@@ -69,11 +69,29 @@ class PauseAtHeightOnToolChange(Script):
                 },
                 "retraction_amount":
                 {
-                    "label": "Retraction",
+                    "label": "Initial Retraction",
                     "description": "How much filament must be retracted at pause.",
                     "unit": "mm",
                     "type": "float",
                     "default_value": 0,
+                    "enabled": "pause_method != \\\"griffin\\\""
+                },
+                "unload_amount":
+                {
+                    "label": "Unload Amount",
+                    "description": "Once paused, amount of filament to be retracted (e.g. length of Bowden tube).",
+                    "unit": "mm",
+                    "type": "float",
+                    "default_value": 300,
+                    "enabled": "pause_method != \\\"griffin\\\""
+                },
+                "load_amount":
+                {
+                    "label": "Load Amount",
+                    "description": "Once filament has been loaded, amount of filament to be extruded (e.g. length of Bowden tube). Will pause before continuing.",
+                    "unit": "mm",
+                    "type": "float",
+                    "default_value": 300,
                     "enabled": "pause_method != \\\"griffin\\\""
                 },
                 "retraction_speed":
@@ -192,6 +210,8 @@ class PauseAtHeightOnToolChange(Script):
         """Inserts the pause commands."""
         disarm_timeout = self.getSettingValueByKey("disarm_timeout")
         retraction_amount = self.getSettingValueByKey("retraction_amount")
+        unload_amount = self.getSettingValueByKey("unload_amount")
+        load_amount = self.getSettingValueByKey("load_amount")
         retraction_speed = self.getSettingValueByKey("retraction_speed")
         extrude_amount = self.getSettingValueByKey("extrude_amount")
         extrude_speed = self.getSettingValueByKey("extrude_speed")
@@ -268,7 +288,7 @@ class PauseAtHeightOnToolChange(Script):
                             halt_gcode += self.putValue(G = 1, X = park_x, Y = park_y, F = 9000) + "\n"
 
                             if current_z < 15:
-                                halt_gcode += self.putValue(G = 1, Z = 15, F = 300) + " ; too close to bed--move to at least 15mm\n"
+                                halt_gcode += self.putValue(G = 1, Z = 15, F = 9000) + " ; too close to bed--move to at least 15mm\n"
 
                             if control_temperatures:
                                 # Set extruder standby temperature
@@ -285,10 +305,29 @@ class PauseAtHeightOnToolChange(Script):
                         if gcode_before:
                             halt_gcode += gcode_before + "\n"
 
+                        if unload_amount is not None:
+                            while unload_amount > 0:
+                                if unload_amount - 200 <= 0:
+                                    halt_gcode += self.putValue(G = 1, E = -unload_amount, F = retraction_speed * 60) + "\n"
+                                else:
+                                    halt_gcode += self.putValue(G = 1, E = -200, F = retraction_speed * 60) + "\n"
+                                unload_amount -= 200
+
                         # Wait till the user continues printing
                         halt_gcode += pause_command + " ; Do the actual pause\n"
 
-                        # Set a custom GCODE section before pause
+                        if load_amount is not None:
+                            while load_amount > 0:
+                                if load_amount - 100 <= 0:
+                                    halt_gcode += self.putValue(G = 1, E = load_amount, F = retraction_speed * 60) + "\n"
+                                else:
+                                    halt_gcode += self.putValue(G = 1, E = 100, F = retraction_speed * 60) + "\n"
+                                load_amount -= 100
+
+                        # Wait till the user continues printing
+                        halt_gcode += pause_command + " ; Do the another pause\n"
+
+                        # Set a custom GCODE section after pause
                         if gcode_after:
                             halt_gcode += gcode_after + "\n"
 
