@@ -64,7 +64,7 @@ class FilamentChangeOnToolChange(Script):
         filament_change = "M600"
 
         if initial_retract is not None and initial_retract > 0.:
-            filament_change = filament_change + (" E%.2f" % initial_retract)
+            filament_change = filament_change + (" E%.2f" % -initial_retract)
 
         if later_retract is not None and later_retract > 0.:
             filament_change = filament_change + (" L%.2f" % later_retract)
