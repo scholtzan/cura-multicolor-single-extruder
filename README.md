@@ -67,6 +67,7 @@ The _Pause At Height On Tool Change_ script inserts commands into the G-Code tha
 	* More configuration options.
 * Disadvantages:
 	* No walk through via the LCD controller.
+	* Manual extrusion/retraction necessary.
 
 
 ### Option 2: Modifying the extruder _End G-Code_
@@ -85,5 +86,26 @@ It is also possible to avoid installing the post-processing scripts and manually
 
 ## 3. Slicing
 
-Once on of the post-processing scripts has been activated and configured, it is time to slice the model.
+Once on of the post-processing scripts has been activated and configured, it is time to slice the model. Multicolor models usually consist of multiple parts that are printed in different colors but aligned to result in a single object.
+
+Import all model parts, make sure they are aligned correctly and select the right extruder for each model part (on the left toolbar). Colors for each extruder can be adjusted in the settings.
+
+![Cura Slicing](images/cura-slicing.png)
+
+Some additional useful settings:
+	* To reduce blobs, it is recommended to `Enable Prime Tower`.
+	* _Merged Meshes Overlap_ controls how large the overlap between the different models is. A larger overlap can result in a stronger connection.
+
+Slice the model and save the G-Code file.
+
+
+## 4. Printing
+
+Finally, the G-Code can be loaded onto the printer and the print can begin. This step can become a bit cumbersome depending on the number of filament changes required.
+
+If the _Filament Change On Tool Change_ script was used for slicing, the printer will beep whenever the filament needs to be changed and instructions that appear on the LCD need to be followed.
+
+If the _Pause At Height On Tool Change_ scripts was used for slicing, the filament change needs to be performed manually and once completed _Resume_ needs to be triggered.
+
+![Cura Slicing](images/finished-print.png)
 
