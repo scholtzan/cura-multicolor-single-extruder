@@ -1,3 +1,5 @@
+# Based on https://github.com/Ultimaker/Cura/blob/master/plugins/PostProcessingPlugin/scripts/FilamentChange.py
+
 from ..Script import Script
 import re
 
