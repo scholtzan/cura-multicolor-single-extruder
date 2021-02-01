@@ -305,24 +305,26 @@ class PauseAtHeightOnToolChange(Script):
                         if gcode_before:
                             halt_gcode += gcode_before + "\n"
 
-                        if unload_amount is not None:
-                            while unload_amount > 0:
-                                if unload_amount - 200 <= 0:
-                                    halt_gcode += self.putValue(G = 1, E = -unload_amount, F = retraction_speed * 60) + "\n"
+                        tmp_unload_amount = unload_amount
+                        if tmp_unload_amount is not None:
+                            while tmp_unload_amount > 0:
+                                if tmp_unload_amount - 200 <= 0:
+                                    halt_gcode += self.putValue(G = 1, E = -tmp_unload_amount, F = retraction_speed * 60) + "\n"
                                 else:
                                     halt_gcode += self.putValue(G = 1, E = -200, F = retraction_speed * 60) + "\n"
-                                unload_amount -= 200
+                                tmp_unload_amount -= 200
 
                         # Wait till the user continues printing
                         halt_gcode += pause_command + " ; Do the actual pause\n"
 
-                        if load_amount is not None:
-                            while load_amount > 0:
-                                if load_amount - 100 <= 0:
-                                    halt_gcode += self.putValue(G = 1, E = load_amount, F = retraction_speed * 60) + "\n"
+                        tmp_load_amount = load_amount
+                        if tmp_load_amount is not None:
+                            while tmp_load_amount > 0:
+                                if tmp_load_amount - 100 <= 0:
+                                    halt_gcode += self.putValue(G = 1, E = tmp_load_amount, F = retraction_speed * 60) + "\n"
                                 else:
                                     halt_gcode += self.putValue(G = 1, E = 100, F = retraction_speed * 60) + "\n"
-                                load_amount -= 100
+                                tmp_load_amount -= 100
 
                         # Wait till the user continues printing
                         halt_gcode += pause_command + " ; Do the another pause\n"

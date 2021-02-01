@@ -2,7 +2,7 @@
 
 Most techniques for printing multicolor prints on single extruder FDM printers are based on swapping filaments on layer changes, for example by enabling [Filament Change](https://github.com/Ultimaker/Cura/blob/master/plugins/PostProcessingPlugin/scripts/FilamentChange.py) or [Pause At Height](https://github.com/Ultimaker/Cura/blob/master/plugins/PostProcessingPlugin/scripts/PauseAtHeight.py) post-processing scripts in Cura. But wouldn't it be nice if filament changes could happen mid-layer? The following guide and scripts provided in this repository show how this can be done in [Cura](https://ultimaker.com/software/ultimaker-cura).
 
-The idea is to emulate a printer with multiple extruders. However, whenever an extruder change happens, the printer is instructed to perform a filament change instead. 
+The idea is to emulate a printer with multiple extruders. Whenever an extruder change happens, the printer is instructed to perform a filament change instead. 
 
 
 ## 1. Setting up a printer with multiple virtual extruders
@@ -92,8 +92,8 @@ Import all model parts, make sure they are aligned correctly and select the righ
 ![Cura Slicing](images/cura-slicing.png)
 
 Some additional useful settings:
-	* To reduce blobs, it is recommended to `Enable Prime Tower`, however this causes a filament change to happen on every layer.
-	* _Merged Meshes Overlap_ controls how large the overlap between the different models is. A larger overlap can result in a stronger connection.
+* To reduce blobs, it is recommended to _Enable Prime Tower_, however this causes a filament change to happen on every layer.
+* _Merged Meshes Overlap_ controls how large the overlap between the different models is. A larger overlap can result in a stronger connection.
 
 Slice the model and save the G-Code file.
 
@@ -106,5 +106,6 @@ If the _Filament Change On Tool Change_ script was used for slicing, the printer
 
 If the _Pause At Height On Tool Change_ scripts was used for slicing, the filament change needs to be performed manually and once completed _Resume_ needs to be triggered.
 
-![Cura Slicing](images/finished-print.png)
+![Finished print](images/finished-print.png)
+*Finished print: cube (white) within a cube (blue)*
 
